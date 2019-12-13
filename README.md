@@ -30,7 +30,11 @@ aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it http 127.0.0.1 455
 
 Finally run `resolve_did.py` to connect the agents, and tell the client to
 send a did resolution request to the server:
-`python3 resolve_did.py`
+
+```
+python3 resolve_did.py
+```
+
 In the log of the server you should see the did resolution request arriving,
 and on the client you should then see the resolved did document of the didcomm
 message.
