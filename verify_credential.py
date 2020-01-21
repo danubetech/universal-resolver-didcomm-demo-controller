@@ -1,10 +1,10 @@
 from connect import connect_agents
 import requests
-from config import client_url
 import urllib
+from config import client_url
 
 
-def resolve_did(base_url, connection_id):
+def verify_credential(base_url, connection_id):
     url = urllib.parse.urljoin(base_url,
                                f"connections/{connection_id}/resolve-did")
     content = {
@@ -22,7 +22,7 @@ def resolve_did(base_url, connection_id):
 
 def main():
     connection_id = connect_agents()
-    resolve_did(client_url, connection_id)
+    verify_credential(client_url, connection_id)
 
 
 if __name__ == '__main__':
