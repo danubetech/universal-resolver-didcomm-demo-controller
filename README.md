@@ -23,9 +23,16 @@ Then start two agents, acting as a server and a client (in a separate shell afte
 ```
 # server
 aca-py start --admin-insecure-mode --admin 127.0.0.1 3000 -it http 127.0.0.1 3555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:3555 --auto-respond-messages --label Server --auto-ping-connection --log-level debug
+# docker server (image built with aries-cloudagent-container)
+docker run --net=host -p 3000:3000 -p 3555:3555 -i -t 4bae9e775869 start --admin-insecure-mode --admin 0.0.0.0 3000 -it http 0.0.0.0 3555 -ot http --auto-accept-invites -- auto-accept-requests --endpoint http://0.0.0.0:3555 --auto-respond-messages --label Server --auto-ping-connection --log-level debug
 
 # client (will execute the didcomm queries)
 aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it http 127.0.0.1 4555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug
+# docker client
+docker run --net=host -p 4000:4000 -p 4555:4555 -i -
+t 4bae9e775869 start --admin-insecure-mode --admin 0.0.0.0 4000 -it http 0.0.0.0 4555 -ot http --auto-accept-invites --aut
+o-accept-requests --endpoint http://0.0.0.0:4555 --auto-store-credential --auto-respond-messages --label Client --auto-pin
+g-connection --log-level debug
 ```
 
 Finally run `resolve_did.py` to connect the agents, and tell the client to
