@@ -2,8 +2,10 @@
 Establish a connection between two cloud agents, using their REST APIs
 """
 
-from config import server_url, client_url
+import base64
+from config import client_url
 from errors import NotConnectedError
+import json
 
 import requests
 import time
@@ -27,9 +29,6 @@ These agents can be started like:
         --auto-respond-messages --label Alice --auto-ping-connection
 """
 
-session = requests.Session()
-session.headers.update({'Accept': 'application/json'})
-
 
 def create_invitation(base_url):
     url = urllib.parse.urljoin(base_url, 'connections/create-invitation')
@@ -38,6 +37,11 @@ def create_invitation(base_url):
 
 def receive_invitation(base_url, invitation):
     url = urllib.parse.urljoin(base_url, 'connections/receive-invitation')
+    return session.post(url, json=invitation)
+
+
+def receive_invitation_didexchange(base_url, invitation):
+    url = urllib.parse.urljoin(base_url, 'didexchange/receive-invitation')
     return session.post(url, json=invitation)
 
 
@@ -56,18 +60,31 @@ def get_connection_id(base_url):
 
 
 def _connect_agents():
-    invite_response = create_invitation(server_url)
-    response = receive_invitation(client_url, invite_response['invitation'])
-    assert(response.status_code == 200)
+    # invite_response = create_invitation(server_url)
+    with open("invitation.txt") as handle:
+        invitation = handle.readline().strip()
+        # if the invitation is not valid json try base64 decoding it first
+        try:
+            invitation = json.loads(invitation)
+        except json.decoder.JSONDecodeError:
+            invitation = base64.b64decode(invitation).decode()
+            invitation = json.loads(invitation)
+            print(f"decoded invitation: \n{invitation}")
+
+        print ('receive invitation, body: ')
+        print(invitation)
+        response = receive_invitation_didexchange(client_url, invitation)
+        assert(response.status_code == 200)
 
 
 def connect_agents():
     try:
         connection_id = get_connection_id(client_url)
     except NotConnectedError:
+        # import pdb; pdb.set_trace()
         _connect_agents()
         # TODO: wait until connection shows up in /connections
-        time.sleep(0.5)
+        time.sleep(1.5)
         connection_id = get_connection_id(client_url)
     return connection_id
 
