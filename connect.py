@@ -18,15 +18,14 @@ session.headers.update({'Accept': 'application/json'})
 """
 These agents can be started like:
     server:
-        aca-py start --admin-insecure-mode --admin 127.0.0.1 3000 -it http
-        127.0.0.1 3555 -ot http --auto-accept-invites --auto-accept-requests
-        --endpoint http://127.0.0.1:3555 --auto-respond-messages --label Faber
-        --auto-ping-connection
+        aca-py start -it http 127.0.0.1 3555 -ot http --auto-accept-invites
+        --auto-accept-requests --endpoint http://127.0.0.1:3555
+        --auto-respond-messages --label Server --log-level debug
+        --public-invite --invite --invite-base-url http://localhost:3555
+        --invite-multi-use --no-ledger --admin-insecure-mode --admin 127.0.0.1
+        3000 --write-invitation-to=/home/username/.invitation.txt
     client:
-        aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it http
-        127.0.0.1 4555 -ot http --auto-accept-invites --auto-accept-requests
-        --endpoint http://127.0.0.1:4555 --auto-store-credential
-        --auto-respond-messages --label Alice --auto-ping-connection
+        aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it http 127.0.0.1 4555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --no-ledger
 """
 
 
@@ -60,7 +59,6 @@ def get_connection_id(base_url):
 
 
 def _connect_agents():
-    # invite_response = create_invitation(server_url)
     with open("invitation.txt") as handle:
         invitation = handle.readline().strip()
         # if the invitation is not valid json try base64 decoding it first
@@ -71,7 +69,7 @@ def _connect_agents():
             invitation = json.loads(invitation)
             print(f"decoded invitation: \n{invitation}")
 
-        print ('receive invitation, body: ')
+        print('receive invitation, body: ')
         print(invitation)
         response = receive_invitation_didexchange(client_url, invitation)
         assert(response.status_code == 200)
@@ -81,7 +79,6 @@ def connect_agents():
     try:
         connection_id = get_connection_id(client_url)
     except NotConnectedError:
-        # import pdb; pdb.set_trace()
         _connect_agents()
         # TODO: wait until connection shows up in /connections
         time.sleep(1.5)
