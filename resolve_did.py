@@ -1,3 +1,4 @@
+import click
 from connect import connect_agents
 import requests
 from config import client_url
@@ -20,8 +21,13 @@ def resolve_did(base_url, connection_id):
     requests.post(url, json=content)
 
 
-def main():
-    connection_id = connect_agents()
+@click.command()
+@click.option('--invitation-path', default=None,
+              help='path of the invitation file.')
+@click.option('--invitation', default=None, help='base64-encoded invitation.')
+def main(invitation_path, invitation):
+    connection_id = connect_agents(invitation_path=invitation_path,
+                                   invitation=invitation)
     resolve_did(client_url, connection_id)
 
 

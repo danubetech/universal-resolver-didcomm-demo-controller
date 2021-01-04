@@ -6,6 +6,7 @@ import base64
 from config import client_url
 from errors import NotConnectedError
 import json
+import os
 
 import requests
 import time
@@ -58,28 +59,34 @@ def get_connection_id(base_url):
     raise NotConnectedError()
 
 
-def _connect_agents():
-    with open("invitation.txt") as handle:
-        invitation = handle.readline().strip()
-        # if the invitation is not valid json try base64 decoding it first
-        try:
-            invitation = json.loads(invitation)
-        except json.decoder.JSONDecodeError:
-            invitation = base64.b64decode(invitation).decode()
-            invitation = json.loads(invitation)
-            print(f"decoded invitation: \n{invitation}")
+def _connect_agents(invitation_path, invitation):
+    if invitation_path == invitation:
+        raise ValueError('Provide either invitation_path or the invitation')
 
-        print('receive invitation, body: ')
-        print(invitation)
-        response = receive_invitation_didexchange(client_url, invitation)
-        assert(response.status_code == 200)
+    if invitation_path is not None:
+        expanded_path = os.path.expanduser(invitation_path)
+        with open(expanded_path) as handle:
+            invitation = handle.readline().strip()
+
+    # if the invitation is not valid json try base64 decoding it first
+    try:
+        invitation = json.loads(invitation)
+    except json.decoder.JSONDecodeError:
+        invitation = base64.b64decode(invitation).decode()
+        invitation = json.loads(invitation)
+        print(f"decoded invitation: \n{invitation}")
+
+    print('receive invitation, body: ')
+    print(invitation)
+    response = receive_invitation_didexchange(client_url, invitation)
+    assert(response.status_code == 200)
 
 
-def connect_agents():
+def connect_agents(invitation_path, invitation):
     try:
         connection_id = get_connection_id(client_url)
     except NotConnectedError:
-        _connect_agents()
+        _connect_agents(invitation_path, invitation)
         # TODO: wait until connection shows up in /connections
         time.sleep(1.5)
         connection_id = get_connection_id(client_url)
