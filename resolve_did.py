@@ -9,7 +9,7 @@ def resolve_did(base_url, connection_id):
     url = urllib.parse.urljoin(base_url,
                                f"connections/{connection_id}/resolve-did")
     content = {
-        "@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/did_resolution/0.1/resolve",
+        "@type": "https://didcomm.org/did_resolution/0.1",
         "@id": "xhqMoTXfqhvAgtYxUSfaxbSiqWke9t",
         "did": "did:sov:WRfXPg8dantKVubE3HX8pw",
         "input_options": {
