@@ -10,11 +10,11 @@ The demo script is marked in red in the following diagram:
 
 ![architecture-demo-script](https://raw.githubusercontent.com/danubetech/universal-resolver-didcomm-demo/main/diagrams/architecture-demo-script.png)
 
-# Run the demo
+# Run the demo script
 
-First, deploy the DIDComm client agent 
+First, make sure that you have both a client DIDComm agent and a Universal Resolver DIDComm agent you can use for the demo script (see https://github.com/hyperledger/aries-cloudagent-python/).
 
-Finally run `resolve_did.py` to connect the client DIDComm agent to the Universal Resolver DIDComm agent, and then instruct the client DIDComm agent to send a DID resolution request.
+Run `resolve_did.py` to connect the client DIDComm agent to the Universal Resolver DIDComm agent, and then instruct the client DIDComm agent to send a DID resolution request.
 
 ```
 python3 resolve_did.py --invitation-path=~/didcomm-invitation.txt
