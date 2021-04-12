@@ -28,16 +28,21 @@ When running the docker demo, first build the docker image inside the aries-clou
 `docker build . -f docker/Dockerfile.did_resolution_demo -t universalresolver/universal-resolver-didcomm-demo:latest`
 
 Then start two agents, acting as a server and a client (in a separate shell after activating the virtualenv again):
+
 ```
 # server
 aca-py start -it http 127.0.0.1 3555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:3555 --auto-respond-messages --label Server --log-level debug --public-invite --invite --invite-base-url http://localhost:3555 --invite-multi-use --no-ledger --admin-insecure-mode --admin 127.0.0.1 3000 --write-invitation-to=~/didcomm-invitation.txt --emit-new-didcomm-prefix
+
 # docker server (image built with aries-cloudagent-container), listening on and mapping port 3555:
 docker run --net=host -p 3000:3000 -p 3555:3555 -i -t universalresolver/universal-resolver-didcomm-demo:latest start --admin-insecure-mode --admin 0.0.0.0 3000 -it http 0.0.0.0 3555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:3555 --auto-respond-messages --label Server --log-level debug  --public-invite --invite --invite-base-url http://localhost:8080 --no-ledger --emit-new-didcomm-prefix
+```
 
 When using docker you currently have to copy/paste the invitation manually, or use docker volumes.
 
+```
 # client (will execute the didcomm queries)
 aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it http 127.0.0.1 4555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --no-ledger --emit-new-didcomm-prefix
+
 # docker client
 docker run --net=host -p 4000:4000 -p 4555:4555 -i -t universalresolver/universal-resolver-didcomm-demo:latest start --admin-insecure-mode --admin 0.0.0.0 4000 -it http 0.0.0.0 4555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --no-ledger --emit-new-didcomm-prefix
 ```
