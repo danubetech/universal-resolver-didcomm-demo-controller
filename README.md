@@ -1,9 +1,14 @@
 # Purpose
 
-This is a demo for aries-cloudagent-python.
-It connects two agents via didcomm, and then sends a did resolution request
-from one agent to the other agent. For the DID resolution
-https://uniresolver.io is used.
+This is a test script for the Universal Resolver DIDComm agent interface (see https://github.com/danubetech/universal-resolver-didcomm).
+
+The test script will invoke a DIDComm agent, which will in turn open a connection to a Universal Resolver DIDComm agent for a DID resolution request.
+
+# Components
+
+The component marked in red is provided by this repository.
+
+![architecture-test-script](https://raw.githubusercontent.com/danubetech/universal-resolver-didcomm-demo/main/diagrams/architecture-test-script.png)
 
 # Run the demo
 
