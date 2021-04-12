@@ -58,16 +58,30 @@ message.
 # Websocket demo
 
 Similar to above, the main difference is to start the server like this:
+
+```
 aca-py start -it ws 127.0.0.1 3555 -ot ws --auto-accept-invites --auto-accept-requests --endpoint ws://127.0.0.1:3555 --auto-respond-messages --label Server --log-level debug --public-invite --invite --invite-base-url ws://localhost:3555 --invite-multi-use --no-ledger --admin-insecure-mode --admin 127.0.0.1 3000 --write-invitation-to=/home/fonfon/code/danubetech/did-resolution-demo/invitation.txt --no-ledger --emit-new-didcomm-prefix
+```
 
 And the client:
+
+```
 aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it ws 127.0.0.1 4555 -ot ws --auto-accept-invites --auto-accept-requests --endpoint ws://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --no-ledger --emit-new-didcomm-prefix
+```
 
 # websocket demo with hard-coded seed / invitation
 Not yet working; start server without --invite-multi-use but with --invite-public:
+
 Server:
+
+```
 aca-py start -it ws 127.0.0.1 3555 -ot ws --auto-accept-invites --auto-accept-requests --endpoint ws://127.0.0.1:3555 --auto-respond-messages --label Server --log-level debug --public-invite --invite --public-invites --invite-public --invite-base-url ws://localhost:3555 --seed 12345678912345678912345678912345 --emit-new-didcomm-prefix
+```
+
 Client:
+
+```
 aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it ws 127.0.0.1 4555 -ot ws --auto-accept-invites --auto-accept-requests --endpoint ws://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --emit-new-didcomm-prefix
+```
 
 instead, write to 'invitation.txt' for now.
