@@ -6,19 +6,23 @@ import urllib
 
 
 def resolve_did(base_url, connection_id):
+    did = "did:sov:WRfXPg8dantKVubE3HX8pw"
     url = urllib.parse.urljoin(base_url,
                                f"connections/{connection_id}/resolve-did")
+    # url = urllib.parse.urljoin(base_url,
+    #                            f"resolver/resolve-did/{did}")
     content = {
         "@type": "https://didcomm.org/did_resolution/0.1",
         "@id": "xhqMoTXfqhvAgtYxUSfaxbSiqWke9t",
-        "did": "did:sov:WRfXPg8dantKVubE3HX8pw",
+        "did": did,
         "input_options": {
             "result_type": "did-document",
             "no_cache": False
         },
         "content": ""
     }
-    requests.post(url, json=content)
+    response = requests.post(url, json=content)
+    print(response)
 
 
 @click.command()

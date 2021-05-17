@@ -32,7 +32,9 @@ These agents can be started like:
 
 def create_invitation(base_url):
     url = urllib.parse.urljoin(base_url, 'connections/create-invitation')
-    return session.post(url).json()
+    params = {'auto_accept': 'true', 'multi_use': 'true', 'public': 'false'}
+    response = session.post(url, params=params)
+    return response.json()
 
 
 def receive_invitation(base_url, invitation):
@@ -41,7 +43,7 @@ def receive_invitation(base_url, invitation):
 
 
 def receive_invitation_didexchange(base_url, invitation):
-    url = urllib.parse.urljoin(base_url, 'didexchange/receive-invitation')
+    url = urllib.parse.urljoin(base_url, 'didexchange/receive-request')
     return session.post(url, json=invitation)
 
 
@@ -57,6 +59,18 @@ def get_connection_id(base_url):
             return active_ids[0]
 
     raise NotConnectedError()
+
+
+def __connect_agents(server_url='http://localhost:3000'):
+    # if the invitation is not valid json try base64 decoding it first
+    invitation_response = create_invitation(server_url)
+    invitation = invitation_response['invitation']
+    print(f"decoded invitation: \n{invitation}")
+    print(json.dumps(invitation))
+
+    response = receive_invitation(client_url, invitation)
+    import ipdb; ipdb.set_trace()
+    assert(response.status_code == 200)
 
 
 def _connect_agents(invitation_path, invitation):
@@ -86,7 +100,7 @@ def connect_agents(invitation_path, invitation):
     try:
         connection_id = get_connection_id(client_url)
     except NotConnectedError:
-        _connect_agents(invitation_path, invitation)
+        __connect_agents()
         # TODO: wait until connection shows up in /connections
         time.sleep(1.5)
         connection_id = get_connection_id(client_url)
